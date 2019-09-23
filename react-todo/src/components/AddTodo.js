@@ -1,26 +1,29 @@
 import React,{ Component } from 'react';
+import { connect } from 'react-redux';
+import {addTodo,clearTodo,updateTitle} from '../services/todos/actions'
+import axios from 'axios';
 
 class AddTodo extends Component{
-    state = {
-        title:''
-    }
-
+    
+    //For updating the title field on entering the value.
     onChange = (e) =>{
-        this.setState({[e.target.name]:e.target.value})
+        this.props.updateTitle(e.target.value);
     }
 
+    //Calling the add method
     onSubmit = (e) => {
         e.preventDefault();
-        this.props.addTodo(this.state.title);
-        console.log('Inside submit');
-        this.setState({title:''})
-        console.log(this.state);
+        axios.post("https://jsonplaceholder.typicode.com/todos",{title:this.props.title,completed:false})
+        .then(res=>{
+            this.props.addTodo(res.data);
+            this.props.clearTodo();
+        })
     }
 
     render(){
         return (
             <form onSubmit={this.onSubmit} style={{display:'flex'}}>
-                <input type="text" name="title" 
+                <input type="text" name="title" value={this.props.title}
                 placeholder="Add Todo ..."
                 style={{flex:'10',padding:'5px'}}
                 onChange={this.onChange}/>
@@ -38,4 +41,15 @@ const btnStyle = {
     padding : '10px'
 
 }
-export default AddTodo;
+
+const mapStateToProps = state =>({ 
+    title : state.addTodoReducer.title
+})
+
+const mapActionsToProps = {
+  addTodo,
+  clearTodo,
+  updateTitle
+}
+
+export default connect(mapStateToProps,mapActionsToProps)(AddTodo);
