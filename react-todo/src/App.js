@@ -64,8 +64,7 @@ class App extends Component{
         <Route exact path="/" render={props=>(
           <React.Fragment>
           <AddTodo/>
-          <Todos todos={this.props.todos} markComplete={this.markComplete}
-          deleteTodo={this.deleteTodo}/>
+          <Todos todos={this.props.todos}/>
           </React.Fragment>
         )}/>
         <Route path="/about" component={About}/>
